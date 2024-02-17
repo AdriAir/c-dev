@@ -1,59 +1,34 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 
-int *getImageSize();
-int length(int *);
+#include "./shared/functions.h"
 
 int main()
 {
-    // Array Pointer: [X,Y].
+    // Array length for X and Y image size values.
+    const size_t IMAGE_SIZE_LENGTH = 2;
+
+    // Image size pointer for an array with X and Y values.
     int *imageSize;
 
-    imageSize = getImageSize();
+    // Pointers of an char array (string) pointers.
+    char **imageData;
 
-    if (imageSize != NULL)
-    {
-        for (size_t i = 0; i < 2; i++)
-        {
-            printf("%d ", *(imageSize + i));
-        }
-        
+    imageSize = getImageSize(IMAGE_SIZE_LENGTH);
 
-        free(imageSize);
-    }
-    else
+    if (validateImageInput(imageSize, IMAGE_SIZE_LENGTH))
     {
-        printf("Can't get image size.");
+        imageData = (imageData, *imageSize, *(imageSize + 1));
+        // TODO: CHECK IF MATRIX IS VALID
     }
-    printf("\n");
+    disposeArray(imageSize);
     return 0;
 }
 
-// Get image size pixels [X Y].
-// Checks if it's values are multiples of 8.
-int *getImageSize()
+// Given an empty array of strings, chars will be stored on each cell.
+// The given array should looks like: [stringPointer(X length) * Y]
+char **getImageData(char **imageData, size_t xSize, size_t ySize)
 {
-    int *imageSize = malloc(2 * sizeof(int));
-
-    if (imageSize != NULL)
-    {
-        printf("Introduce la resolucion de la imágen (X Y): ");
-        scanf("%d %d", imageSize, imageSize + 1);
-    }
-
-    return imageSize;
-}
-
-// Returns the length of a given array.
-int length(int *array)
-{
-    int length = 0;
-    if (array != NULL)
-    {
-        while (*(array + length) != '\0')
-        {
-            length++;
-        }
-    }
-    return length;
 }
