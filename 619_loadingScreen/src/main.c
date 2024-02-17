@@ -27,8 +27,9 @@ int main()
     return 0;
 }
 
-// Given an empty array of strings, chars will be stored on each cell.
+// Given an empty array of string pointers (array of arrays of chars), user will fill it in with chars.
 // The given array should looks like: [stringPointer(X length) * Y]
 char **getImageData(char **imageData, size_t xSize, size_t ySize)
 {
+    //TODO: Malloc X and Y
 }
