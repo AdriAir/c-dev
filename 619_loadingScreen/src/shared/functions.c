@@ -5,31 +5,54 @@
 #include "functions.h"
 
 // Dispose dynamic arrays if exists
-void disposeArray(void *array)
+void disposeArray(int *array)
 {
     if (array != NULL)
     {
         free(array);
     }
 }
+
+// Dispose dynamic matrix if exists
+void disposeMatrix(char **matrix, size_t length)
+{
+    if (matrix != NULL)
+    {
+        for (size_t i = 0; i < length; i++)
+        {
+            if (*(matrix + i) != NULL)
+            {
+                free((matrix + i));
+            }
+        }
+        free(matrix);
+    }
+}
+
 // Valdates image vector input
 bool validateImageInput(int *imageSize, size_t length)
 {
     if (imageSize != NULL)
     {
-        if (checkIfIsPositive(imageSize, length))
+        if (checkIfIsInRange(imageSize, length))
         {
             if (checkMultiple(imageSize, length, 8))
             {
                 return true;
             }
             printf("Both values must be multiples of 8.\n");
+            fflush(stdout);
+
             return false;
         }
         printf("Both numbers must be positive numbers.\n");
+        fflush(stdout);
+
         return false;
     }
     printf("Can't get image size.\n");
+    fflush(stdout);
+
     return false;
 }
 
@@ -41,23 +64,31 @@ int *getImageSize(size_t length)
     if (imageSize != NULL)
     {
         printf("Introduce la resolucion de la imágen (X Y): ");
+        fflush(stdout);
         scanf("%d %d", imageSize, imageSize + 1);
+        fflush(stdin);
     }
 
     return imageSize;
 }
-// Get image pixels [Y1[X_CHARS], Y2[]...].
-int *getImageData(size_t rows, size_t pixelsPerRow)
+
+// Given an empty array of string pointers (array of arrays of chars), user will fill it in with chars.
+// The given array should looks like: [Y * stringPointer(X * char)]
+char **getImageData(char **imageData, size_t xSize, size_t ySize)
 {
-    // char *image = malloc(length * sizeof(int));
-
-    // if (imageSize != NULL)
-    // {
-    //     printf("Introduce la resolucion de la imágen (X Y): ");
-    //     scanf("%d %d", imageSize, imageSize + 1);
-    // }
-
-    // return imageSize;
+    imageData = malloc(ySize + sizeof(char *));
+    printf("Introduce el vector de colores de la imágen (%zu filas; %zu columnas): \n", ySize, xSize);
+    fflush(stdout);
+    for (size_t i = 0; i < ySize; i++)
+    {
+        /**
+         * @bug DATA IS NOT SAVED OK (SHOULD BE BECAUSE FFLUSH OR OUR MATRIX STRUCTURE)
+         */
+        *(imageData + i) = malloc((xSize * sizeof(char)) + 1);
+        fgets(*(imageData + i), sizeof(xSize * sizeof(char) + 1), stdin);
+    }
+    *(imageData + ySize) = '\0';
+    return imageData;
 }
 
 // Checks if every value of an array it's multiple of a base integer value
@@ -74,11 +105,11 @@ bool checkMultiple(int *numbers, size_t length, int base)
 }
 
 // Checks if every value of an array it's a positive number
-bool checkIfIsPositive(int *numbers, size_t length)
+bool checkIfIsInRange(int *numbers, size_t length)
 {
     for (size_t i = 0; i < length; i++)
     {
-        if (*(numbers + i) <= 0)
+        if (*(numbers + i) <= 0 || *(numbers + i) > 48)
         {
             return false;
         }
